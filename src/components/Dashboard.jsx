@@ -204,22 +204,81 @@ export default function Dashboard({ onEnterScorch, onPreviewBlizzard, selectedCh
           )}
         </div>
         <div className="char-grid">
-          {/* Dunes image (maps to solar-ranger) */}
-          <div className={`char-card env dunes ${selectedCharacter==='solar-ranger'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Dunes Runner" onClick={()=>onSelectCharacter?.('solar-ranger')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('solar-ranger')}}}>
+          {/* Solar Ranger - Desert specialist */}
+          <div className={`char-card env dunes ${selectedCharacter==='solar-ranger'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Solar Ranger" onClick={()=>onSelectCharacter?.('solar-ranger')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('solar-ranger')}}}>
             <div className="frame" />
             <div className="portrait env-img dunes" />
+            <div className="char-icon solar">
+              <svg viewBox="0 0 48 48" className="icon-svg">
+                {/* Sun rays */}
+                <g className="sun-rays">
+                  <line x1="24" y1="4" x2="24" y2="8" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="24" y1="40" x2="24" y2="44" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="4" y1="24" x2="8" y2="24" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="40" y1="24" x2="44" y2="24" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="9.17" y1="9.17" x2="11.76" y2="11.76" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="36.24" y1="36.24" x2="38.83" y2="38.83" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="9.17" y1="38.83" x2="11.76" y2="36.24" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="36.24" y1="11.76" x2="38.83" y2="9.17" stroke="#ffb300" strokeWidth="2" strokeLinecap="round"/>
+                </g>
+                {/* Sun center */}
+                <circle cx="24" cy="24" r="8" fill="#ff6a00" stroke="#ffb300" strokeWidth="2"/>
+                <circle cx="24" cy="24" r="5" fill="#ffd700" opacity="0.8"/>
+              </svg>
+            </div>
           </div>
 
-          {/* Forest/trees image rotating (maps to sand-ranger) */}
+          {/* Forest Runner - Nature specialist */}
           <div className={`char-card env forest spin ${selectedCharacter==='sand-ranger'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Forest Runner" onClick={()=>onSelectCharacter?.('sand-ranger')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('sand-ranger')}}}>
             <div className="frame" />
             <div className="portrait env-img forest" />
+            <div className="char-icon forest">
+              <svg viewBox="0 0 48 48" className="icon-svg">
+                {/* Tree trunk */}
+                <rect x="22" y="32" width="4" height="12" fill="#8B4513" rx="1"/>
+                {/* Tree layers */}
+                <path d="M24 8 L18 20 L30 20 Z" fill="#228B22"/>
+                <path d="M24 14 L16 26 L32 26 Z" fill="#32CD32"/>
+                <path d="M24 20 L14 32 L34 32 Z" fill="#228B22"/>
+                {/* Leaves detail */}
+                <circle cx="20" cy="18" r="2" fill="#90EE90" opacity="0.7"/>
+                <circle cx="28" cy="22" r="1.5" fill="#90EE90" opacity="0.7"/>
+                <circle cx="24" cy="16" r="1" fill="#90EE90" opacity="0.8"/>
+              </svg>
+            </div>
           </div>
 
-          {/* Snowcaps image (maps to ice-sentinel) */}
-          <div className={`char-card env snow ${selectedCharacter==='ice-sentinel'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Snow Runner" onClick={()=>onSelectCharacter?.('ice-sentinel')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('ice-sentinel')}}}>
+          {/* Ice Sentinel - Cold weather specialist */}
+          <div className={`char-card env snow ${selectedCharacter==='ice-sentinel'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Ice Sentinel" onClick={()=>onSelectCharacter?.('ice-sentinel')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('ice-sentinel')}}}>
             <div className="frame" />
             <div className="portrait env-img snow" />
+            <div className="char-icon ice">
+              <svg viewBox="0 0 48 48" className="icon-svg">
+                {/* Snowflake center */}
+                <circle cx="24" cy="24" r="3" fill="#87CEEB" stroke="#B0E0E6" strokeWidth="1"/>
+                {/* Main arms */}
+                <line x1="24" y1="8" x2="24" y2="40" stroke="#87CEEB" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="8" y1="24" x2="40" y2="24" stroke="#87CEEB" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="13.86" y1="13.86" x2="34.14" y2="34.14" stroke="#87CEEB" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="34.14" y1="13.86" x2="13.86" y2="34.14" stroke="#87CEEB" strokeWidth="2" strokeLinecap="round"/>
+                {/* Decorative branches */}
+                <g stroke="#B0E0E6" strokeWidth="1" strokeLinecap="round">
+                  <line x1="24" y1="12" x2="20" y2="8"/>
+                  <line x1="24" y1="12" x2="28" y2="8"/>
+                  <line x1="24" y1="36" x2="20" y2="40"/>
+                  <line x1="24" y1="36" x2="28" y2="40"/>
+                  <line x1="12" y1="24" x2="8" y2="20"/>
+                  <line x1="12" y1="24" x2="8" y2="28"/>
+                  <line x1="36" y1="24" x2="40" y2="20"/>
+                  <line x1="36" y1="24" x2="40" y2="28"/>
+                </g>
+                {/* Ice crystals */}
+                <circle cx="18" cy="18" r="1.5" fill="#E0F6FF" opacity="0.8"/>
+                <circle cx="30" cy="30" r="1.5" fill="#E0F6FF" opacity="0.8"/>
+                <circle cx="30" cy="18" r="1" fill="#E0F6FF" opacity="0.6"/>
+                <circle cx="18" cy="30" r="1" fill="#E0F6FF" opacity="0.6"/>
+              </svg>
+            </div>
           </div>
         </div>
       </aside>

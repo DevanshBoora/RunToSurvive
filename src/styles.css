@@ -200,6 +200,30 @@ button{cursor:pointer}
 .char-card:hover{transform:scale(1.02);box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .char-card:active{transform:scale(0.98)}
 .char-card.selected{box-shadow:0 0 0 2px rgba(0,200,255,.6), 0 10px 30px rgba(0,200,255,.25)}
+
+/* Character Icons */
+.char-icon{position:absolute;top:12px;right:12px;width:32px;height:32px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1);z-index:5}
+.char-icon .icon-svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+
+/* Solar Ranger Icon */
+.char-icon.solar{background:radial-gradient(circle,rgba(255,180,0,.3),rgba(255,120,0,.2));border-color:rgba(255,180,0,.4)}
+.char-icon.solar .sun-rays{animation:rotate-rays 4s linear infinite}
+.char-icon.solar:hover .sun-rays{animation-duration:2s}
+@keyframes rotate-rays{to{transform:rotate(360deg)}}
+
+/* Forest Runner Icon */
+.char-icon.forest{background:radial-gradient(circle,rgba(50,205,50,.3),rgba(34,139,34,.2));border-color:rgba(50,205,50,.4)}
+.char-icon.forest .icon-svg{animation:sway 3s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+
+/* Ice Sentinel Icon */
+.char-icon.ice{background:radial-gradient(circle,rgba(135,206,235,.3),rgba(176,224,230,.2));border-color:rgba(135,206,235,.4)}
+.char-icon.ice .icon-svg{animation:sparkle 2s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.8;transform:scale(1.05)}}
+
+/* Icon hover effects */
+.char-card:hover .char-icon{transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.2)}
+.char-card.selected .char-icon{box-shadow:0 0 16px rgba(0,200,255,.4);border-color:rgba(0,200,255,.6)}
 .char-card .frame{position:absolute;inset:0;pointer-events:none;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 0 40px rgba(255,255,255,.04)}
 .char-card .portrait.env-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.05) contrast(1.02)}
 .char-card.env.dunes .portrait.env-img{background-image:
@@ -491,6 +515,18 @@ button{cursor:pointer}
     height: 80px;
   }
   
+  .char-icon {
+    width: 24px;
+    height: 24px;
+    top: 8px;
+    right: 8px;
+  }
+  
+  .char-icon .icon-svg {
+    width: 14px;
+    height: 14px;
+  }
+  
   .earth-widget {
     height: 120px;
   }
@@ -632,6 +668,18 @@ button{cursor:pointer}
   
   .char-card {
     height: 80px;
+  }
+  
+  .char-icon {
+    width: 20px;
+    height: 20px;
+    top: 6px;
+    right: 6px;
+  }
+  
+  .char-icon .icon-svg {
+    width: 12px;
+    height: 12px;
   }
 }
 
