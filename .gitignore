@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+/dist/
+/build/
+/.cache/
+
+# Vite / Local dev
+.vite/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files (store secrets locally only)
+.env
+.env.*
+
+# Coverage
+coverage/
+
+# OS / Editor
+*.swp
+*.swo
+.idea/
+*.iml
+
+# Temporary
+.tmp/
+.temp/
