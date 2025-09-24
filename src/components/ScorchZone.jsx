@@ -19,6 +19,7 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
   const [score, setScore] = useState(0)
   const [quiz, setQuiz] = useState({ open: false, q: null })
   const [paused, setPaused] = useState(false)
+  const [loading, setLoading] = useState(true)
   const startTimeRef = useRef(0)
   const vyRef = useRef(0)
   const slidingRef = useRef(false)
@@ -870,6 +871,9 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
     }
     animate()
 
+    // Hide loading screen after scene is ready
+    setTimeout(() => setLoading(false), 1000)
+
     return () => {
       window.removeEventListener('resize', onResize)
       try { ro.disconnect() } catch {}
@@ -899,6 +903,23 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
 
   return (
     <div className="scorch-zone">
+      {loading && (
+        <div className="loading-screen">
+          <div className="loading-content">
+            <div className="loading-spinner">
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+              <div className="spinner-ring"></div>
+            </div>
+            <div className="loading-text">
+              Initializing {selectedCharacter === 'solar-ranger' ? 'Solar Ranger' : 
+                          selectedCharacter === 'sand-ranger' ? 'Forest Runner' : 'Ice Sentinel'}...
+            </div>
+            <div className="loading-subtitle">Preparing survival systems</div>
+          </div>
+        </div>
+      )}
+      
       <div className="hud">
         <div className="meter">
           <div className="earth-icon" />
