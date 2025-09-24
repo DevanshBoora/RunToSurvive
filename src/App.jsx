@@ -6,7 +6,7 @@ import ScorchZone from './components/ScorchZone.jsx'
 import './styles.css'
 
 export default function App() {
-  const [screen, setScreen] = useState('splash') // splash | dashboard | scorch
+  const [screen, setScreen] = useState('splash') // splash | dashboard | scorch | blizzard
   const [transitioning, setTransitioning] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState(() => {
     try { return localStorage.getItem('selectedCharacter') || 'solar-ranger' } catch { return 'solar-ranger' }
@@ -32,6 +32,10 @@ export default function App() {
                 // Direct route to gameplay (no intros)
                 setTransitioning(true)
                 setTimeout(() => { setScreen('scorch'); setTransitioning(false) }, 200)
+              }}
+              onPreviewBlizzard={() => {
+                // For now, show an alert since Blizzard zone is in preview
+                alert('🌨️ Blizzard Zone - Coming Soon!\n\nThis frozen wasteland will challenge you with:\n• Sub-zero temperatures\n• Blinding snowstorms\n• Ice-based survival challenges\n\nStay tuned for this chilling adventure!')
               }}
               selectedCharacter={selectedCharacter}
               onSelectCharacter={setSelectedCharacter}

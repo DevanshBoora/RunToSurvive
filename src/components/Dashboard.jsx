@@ -52,6 +52,19 @@ export default function Dashboard({ onEnterScorch, onPreviewBlizzard, selectedCh
         <motion.h1 className="pick-world" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
           PICK A WORLD
         </motion.h1>
+        
+        <div className="ready-indicator">
+          {selectedCharacter && (
+            <motion.div 
+              className="ready-badge"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              ✓ Character Selected - Ready to Survive!
+            </motion.div>
+          )}
+        </div>
 
         <div className="world-cards">
           <motion.button
@@ -170,6 +183,26 @@ export default function Dashboard({ onEnterScorch, onPreviewBlizzard, selectedCh
 
       <aside className="side-panel left">
         <h3>SELECT YOUR CHARACTER</h3>
+        <div className="char-info">
+          {selectedCharacter === 'solar-ranger' && (
+            <div className="char-description">
+              <strong>Solar Ranger</strong><br />
+              <small>Desert survival expert with heat resistance</small>
+            </div>
+          )}
+          {selectedCharacter === 'sand-ranger' && (
+            <div className="char-description">
+              <strong>Forest Runner</strong><br />
+              <small>Agile explorer with nature adaptation</small>
+            </div>
+          )}
+          {selectedCharacter === 'ice-sentinel' && (
+            <div className="char-description">
+              <strong>Ice Sentinel</strong><br />
+              <small>Cold weather specialist with endurance</small>
+            </div>
+          )}
+        </div>
         <div className="char-grid">
           {/* Dunes image (maps to solar-ranger) */}
           <div className={`char-card env dunes ${selectedCharacter==='solar-ranger'?'selected':''}`} role="button" tabIndex={0} aria-label="Select Dunes Runner" onClick={()=>onSelectCharacter?.('solar-ranger')} onKeyDown={(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelectCharacter?.('solar-ranger')}}}>
