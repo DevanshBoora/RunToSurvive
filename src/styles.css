@@ -23,12 +23,12 @@ button{cursor:pointer}
 .splash-hint{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);font-size:14px;color:#cbd5e1;opacity:.85;letter-spacing:.15em;font-family:'Orbitron'}
 
 /* Dashboard */
-.dashboard{position:relative;height:100%;display:flex;align-items:center;justify-content:center}
+.dashboard{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
 .dashboard-bg{position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0c,#17181c);opacity:.9}
-.dashboard-center{position:relative;z-index:2;text-align:center}
-.pick-world{font-family:'Orbitron';letter-spacing:.25em;color:#fff;margin-bottom:24px;text-shadow:0 16px 40px rgba(255,120,0,.18)}
-.world-cards{display:flex;gap:28px}
-.world-card{position:relative;width:320px;height:420px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:#0f0f12;overflow:hidden;transform-style:preserve-3d;will-change:transform,box-shadow;transition:transform .2s ease, box-shadow .2s ease;transform:translate3d(var(--tx,0), var(--ty,0), 0) rotateX(var(--rx,0)) rotateY(var(--ry,0));animation:idleFloat 6s ease-in-out infinite}
+.dashboard-center{position:relative;z-index:2;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;max-width:800px}
+.pick-world{font-family:'Orbitron';letter-spacing:.25em;color:#fff;margin-bottom:32px;font-size:32px;text-shadow:0 16px 40px rgba(255,120,0,.18)}
+.world-cards{display:flex;gap:32px;justify-content:center;align-items:center}
+.world-card{position:relative;width:360px;height:480px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:#0f0f12;overflow:hidden;transform-style:preserve-3d;will-change:transform,box-shadow;transition:transform .2s ease, box-shadow .2s ease;transform:translate3d(var(--tx,0), var(--ty,0), 0) rotateX(var(--rx,0)) rotateY(var(--ry,0));animation:idleFloat 6s ease-in-out infinite}
 .world-card:hover{animation-duration:8s}
 @keyframes idleFloat{0%{transform:translate3d(0,0,0) rotateX(var(--rx,0)) rotateY(var(--ry,0))}50%{transform:translate3d(0,-6px,0) rotateX(var(--rx,0)) rotateY(var(--ry,0))}100%{transform:translate3d(0,0,0) rotateX(var(--rx,0)) rotateY(var(--ry,0))}}
 .world-card .card-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,0));pointer-events:none}
@@ -184,12 +184,12 @@ button{cursor:pointer}
 @keyframes aurora{0%{transform:translateX(-6%) skewX(-2deg)}100%{transform:translateX(6%) skewX(2deg)}}
 @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:.55}}
 
-.side-panel{position:absolute;top:40px;width:280px;bottom:40px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px}
+.side-panel{position:absolute;top:20px;width:300px;bottom:20px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;display:flex;flex-direction:column}
 .side-panel h3{font-family:'Orbitron';font-size:14px;letter-spacing:.2em;margin-bottom:10px;color:#cbd5e1}
-.side-panel.left{left:24px}
-.side-panel.right{right:24px}
-.char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.char-card{position:relative;height:120px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);overflow:hidden;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
+.side-panel.left{left:20px}
+.side-panel.right{right:20px}
+.char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1}
+.char-card{position:relative;height:140px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);overflow:hidden;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
 .char-card.selected{box-shadow:0 0 0 2px rgba(0,200,255,.6), 0 10px 30px rgba(0,200,255,.25)}
 .char-card .frame{position:absolute;inset:0;pointer-events:none;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 0 40px rgba(255,255,255,.04)}
 .char-card .portrait.env-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.05) contrast(1.02)}
@@ -261,7 +261,7 @@ button{cursor:pointer}
 .char-card.female.blizzard .legs.insulated{position:absolute;top:66px;left:22px;width:36px;height:28px;border-radius:8px;background:linear-gradient(180deg,#7fa6c0,#4c6a80)}
 .char-card.female.blizzard .accent.frost-core{position:absolute;top:38px;left:52px;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#eaffff,#79c4ff)}
 @keyframes spin{to{transform:rotateY(360deg)}}
-.earth-widget{position:relative;height:160px;border-radius:12px;border:1px solid rgba(255,255,255,.06);background:radial-gradient(80% 80% at 50% 50%, #0a0f14, #07090c)}
+.earth-widget{position:relative;height:180px;border-radius:12px;border:1px solid rgba(255,255,255,.06);background:radial-gradient(80% 80% at 50% 50%, #0a0f14, #07090c);margin-top:auto}
 .earth-scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
 .earth-svg{width:140px;height:140px;filter:drop-shadow(0 0 20px rgba(0,180,255,.35))}
 .earth-svg .lands{animation:earthSpin 16s linear infinite;transform-origin:100px 100px}
@@ -382,9 +382,9 @@ button{cursor:pointer}
 /* ===================== Responsive Design ===================== */
 
 /* Tablet and smaller desktop screens */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .side-panel {
-    width: 240px;
+    width: 260px;
   }
   
   .side-panel.left {
@@ -396,8 +396,23 @@ button{cursor:pointer}
   }
   
   .world-card {
-    width: 280px;
-    height: 380px;
+    width: 320px;
+    height: 420px;
+  }
+  
+  .world-cards {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .side-panel {
+    width: 240px;
+  }
+  
+  .world-card {
+    width: 300px;
+    height: 400px;
   }
   
   .world-cards {
@@ -410,11 +425,14 @@ button{cursor:pointer}
   .dashboard {
     flex-direction: column;
     padding: 20px;
+    height: auto;
+    min-height: 100vh;
   }
   
   .dashboard-center {
     order: 2;
     margin: 20px 0;
+    max-width: none;
   }
   
   .side-panel {
