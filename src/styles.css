@@ -378,3 +378,368 @@ button{cursor:pointer}
 .game-over{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:60}
 .game-over .title{font-family:'Orbitron';letter-spacing:.2em;font-size:22px}
 .game-over button{padding:10px 14px;border-radius:10px;background:#171a22;color:#e5edf7;border:1px solid rgba(255,255,255,.08)}
+
+/* ===================== Responsive Design ===================== */
+
+/* Tablet and smaller desktop screens */
+@media (max-width: 1200px) {
+  .side-panel {
+    width: 240px;
+  }
+  
+  .side-panel.left {
+    left: 16px;
+  }
+  
+  .side-panel.right {
+    right: 16px;
+  }
+  
+  .world-card {
+    width: 280px;
+    height: 380px;
+  }
+  
+  .world-cards {
+    gap: 20px;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 992px) {
+  .dashboard {
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .dashboard-center {
+    order: 2;
+    margin: 20px 0;
+  }
+  
+  .side-panel {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+  
+  .side-panel.left {
+    order: 1;
+    margin-bottom: 20px;
+  }
+  
+  .side-panel.right {
+    order: 3;
+    margin-top: 20px;
+  }
+  
+  .world-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .world-card {
+    width: 100%;
+    max-width: 320px;
+    height: 200px;
+  }
+  
+  .pick-world {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .char-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  .char-card {
+    height: 80px;
+  }
+  
+  .earth-widget {
+    height: 120px;
+  }
+  
+  .earth-svg {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .side-panel {
+    padding: 12px;
+    border-radius: 12px;
+  }
+  
+  .side-panel h3 {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .world-card {
+    height: 180px;
+    border-radius: 16px;
+  }
+  
+  .world-card .card-title {
+    font-size: 16px;
+  }
+  
+  .pick-world {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  
+  .char-grid {
+    gap: 6px;
+  }
+  
+  .char-card {
+    height: 70px;
+    border-radius: 10px;
+  }
+  
+  .earth-widget {
+    height: 100px;
+  }
+  
+  .earth-svg {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .earth-caption {
+    font-size: 9px;
+    left: 8px;
+    bottom: 6px;
+  }
+  
+  .earth-co2 {
+    font-size: 8px;
+    right: 8px;
+    top: 6px;
+    padding: 3px 5px;
+  }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 12px;
+  }
+  
+  .side-panel {
+    padding: 10px;
+  }
+  
+  .world-card {
+    height: 160px;
+    max-width: 280px;
+  }
+  
+  .world-card .card-title {
+    font-size: 14px;
+  }
+  
+  .pick-world {
+    font-size: 18px;
+    letter-spacing: 0.15em;
+  }
+  
+  .char-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .char-card {
+    height: 90px;
+  }
+  
+  .earth-widget {
+    height: 90px;
+  }
+  
+  .earth-svg {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .dashboard {
+    padding: 8px;
+  }
+  
+  .world-card {
+    height: 140px;
+  }
+  
+  .world-card .card-title {
+    font-size: 12px;
+  }
+  
+  .pick-world {
+    font-size: 16px;
+  }
+  
+  .side-panel h3 {
+    font-size: 11px;
+  }
+  
+  .char-card {
+    height: 80px;
+  }
+}
+
+/* Game screen responsive design */
+@media (max-width: 768px) {
+  .scorch-zone {
+    padding: 10px;
+  }
+  
+  .quiz-card {
+    width: 95vw;
+    margin: 10px;
+  }
+  
+  .quiz-header {
+    padding: 12px;
+  }
+  
+  .quiz-body {
+    padding: 12px;
+  }
+  
+  .choice {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  .game-over .title {
+    font-size: 18px;
+  }
+  
+  .game-over button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-card {
+    width: 98vw;
+    margin: 5px;
+  }
+  
+  .quiz-header {
+    padding: 10px;
+  }
+  
+  .quiz-body {
+    padding: 10px;
+  }
+  
+  .choice {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+  
+  .game-over .title {
+    font-size: 16px;
+  }
+  
+  .prompt {
+    font-size: 14px;
+  }
+  
+  .fact {
+    font-size: 12px;
+  }
+}
+
+/* Splash screen responsive */
+@media (max-width: 768px) {
+  .splash-title {
+    font-size: 36px;
+  }
+  
+  .splash-hint {
+    font-size: 12px;
+    bottom: 15%;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-title {
+    font-size: 28px;
+    letter-spacing: 0.08em;
+  }
+  
+  .splash-hint {
+    font-size: 11px;
+    bottom: 20%;
+  }
+}
+
+/* Earth modal responsive */
+@media (max-width: 768px) {
+  .earth-modal-content {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .earth-svg.big {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .earth-modal-caption {
+    font-size: 14px;
+  }
+  
+  .earth-modal-co2 {
+    font-size: 12px;
+  }
+  
+  .earth-close {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .earth-modal-content {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .earth-svg.big {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .earth-modal-caption {
+    font-size: 12px;
+  }
+  
+  .earth-modal-co2 {
+    font-size: 10px;
+  }
+}
