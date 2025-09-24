@@ -198,25 +198,61 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
     sunGlow.position.copy(sun.position)
     scene.add(sunGlow)
 
-    // Heat shimmer particles
-    const shimmerGeo = new THREE.SphereGeometry(0.1, 4, 4)
-    const shimmerMat = new THREE.MeshBasicMaterial({
-      color: 0xffcc66,
-      transparent: true,
-      opacity: 0.3
-    })
-    
-    const shimmerParticles = []
-    for (let i = 0; i < 20; i++) {
-      const particle = new THREE.Mesh(shimmerGeo, shimmerMat)
-      particle.position.set(
-        (Math.random() - 0.5) * 30,
-        Math.random() * 2 + 0.5,
-        (Math.random() - 0.5) * 20
-      )
-      shimmerParticles.push(particle)
-      scene.add(particle)
+    // Enhanced environment particles
+    const createEnvironmentParticles = () => {
+      const particles = []
+      
+      // Heat shimmer particles
+      const shimmerGeo = new THREE.SphereGeometry(0.08, 4, 4)
+      const shimmerMat = new THREE.MeshBasicMaterial({
+        color: 0xffcc66,
+        transparent: true,
+        opacity: 0.4
+      })
+      
+      for (let i = 0; i < 25; i++) {
+        const particle = new THREE.Mesh(shimmerGeo, shimmerMat)
+        particle.position.set(
+          (Math.random() - 0.5) * 35,
+          Math.random() * 3 + 0.5,
+          (Math.random() - 0.5) * 25
+        )
+        particle.userData = {
+          originalY: particle.position.y,
+          speed: 0.5 + Math.random() * 0.5,
+          amplitude: 0.3 + Math.random() * 0.4
+        }
+        particles.push(particle)
+        scene.add(particle)
+      }
+      
+      // Dust motes
+      const dustGeo = new THREE.SphereGeometry(0.02, 3, 3)
+      const dustMat = new THREE.MeshBasicMaterial({
+        color: 0xd4823a,
+        transparent: true,
+        opacity: 0.6
+      })
+      
+      for (let i = 0; i < 15; i++) {
+        const dust = new THREE.Mesh(dustGeo, dustMat)
+        dust.position.set(
+          (Math.random() - 0.5) * 40,
+          Math.random() * 4 + 1,
+          (Math.random() - 0.5) * 30
+        )
+        dust.userData = {
+          driftSpeed: 0.2 + Math.random() * 0.3,
+          rotSpeed: (Math.random() - 0.5) * 0.02
+        }
+        particles.push(dust)
+        scene.add(dust)
+      }
+      
+      return particles
     }
+    
+    const environmentParticles = createEnvironmentParticles()
 
     // Character builder system - matches selected character
     const buildCharacter = (characterType) => {
@@ -772,6 +808,22 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
           }
         }
 
+        // Animate environment particles
+        environmentParticles.forEach((particle, i) => {
+          if (particle.userData.originalY !== undefined) {
+            // Heat shimmer animation
+            const { originalY, speed, amplitude } = particle.userData
+            particle.position.y = originalY + Math.sin(t * speed + i) * amplitude
+            particle.material.opacity = 0.3 + Math.sin(t * speed * 2 + i) * 0.1
+          } else if (particle.userData.driftSpeed !== undefined) {
+            // Dust drift animation
+            const { driftSpeed, rotSpeed } = particle.userData
+            particle.position.x += Math.sin(t * driftSpeed + i) * 0.01
+            particle.position.z += Math.cos(t * driftSpeed * 0.7 + i) * 0.008
+            particle.rotation.y += rotSpeed
+          }
+        })
+
         // Collisions
         const heroBB = new THREE.Box3().setFromObject(playerRef.current)
         const heroShrink = new THREE.Vector3(0.8, slidingRef.current ? 0.6 : 1.8, 0.8)
@@ -850,10 +902,21 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
       <div className="hud">
         <div className="meter">
           <div className="earth-icon" />
-          <div className="bar"><div className="fill" style={{ width: `${health}%` }} /></div>
+          <div className="bar">
+            <div 
+              className={`fill ${health < 30 ? 'low' : ''}`} 
+              style={{ width: `${health}%` }} 
+            />
+          </div>
         </div>
         <div className="score">Score {score}</div>
-        <div className="hint">Swipe/Arrows to change lanes • Up/Space to jump • Down to slide • P pause • Esc back</div>
+        <div className="hint">
+          {selectedCharacter === 'solar-ranger' && '☀️ Solar Ranger: Heat resistant with solar power'}
+          {selectedCharacter === 'sand-ranger' && '🌲 Forest Runner: Agile nature specialist'}
+          {selectedCharacter === 'ice-sentinel' && '❄️ Ice Sentinel: Cold weather endurance expert'}
+          <br />
+          Swipe/Arrows to change lanes • Up/Space to jump • Down to slide • P pause • Esc back
+        </div>
       </div>
 
       <div ref={mountRef} className="three-canvas" />
