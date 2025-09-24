@@ -105,77 +105,298 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
     camera.position.set(0, 6, 12)
     camera.lookAt(0, 0, 0)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      alpha: true,
+      powerPreference: "high-performance"
+    })
     renderer.setSize(Math.max(1, mount.clientWidth), Math.max(1, mount.clientHeight))
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1))
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 1.2
     mount.appendChild(renderer.domElement)
 
-    // Lights
-    const hemi = new THREE.HemisphereLight(0xffe6a3, 0x442200, 0.9)
-    const dir = new THREE.DirectionalLight(0xffcc88, 0.95)
-    dir.position.set(5, 10, 5)
-    const rim = new THREE.DirectionalLight(0x79c4ff, 0.35)
-    rim.position.set(-6, 6, -4)
-    scene.add(hemi, dir, rim)
+    // Improved lighting system
+    const hemi = new THREE.HemisphereLight(0xffe6a3, 0x442200, 0.8)
+    
+    // Main sun light with shadows
+    const sunLight = new THREE.DirectionalLight(0xffcc88, 1.2)
+    sunLight.position.set(8, 15, 8)
+    sunLight.castShadow = true
+    sunLight.shadow.mapSize.width = 2048
+    sunLight.shadow.mapSize.height = 2048
+    sunLight.shadow.camera.near = 0.5
+    sunLight.shadow.camera.far = 50
+    sunLight.shadow.camera.left = -15
+    sunLight.shadow.camera.right = 15
+    sunLight.shadow.camera.top = 15
+    sunLight.shadow.camera.bottom = -15
+    sunLight.shadow.bias = -0.0001
+    
+    // Rim lighting for character definition
+    const rimLight = new THREE.DirectionalLight(0x79c4ff, 0.4)
+    rimLight.position.set(-8, 8, -6)
+    
+    // Ambient fill light
+    const fillLight = new THREE.DirectionalLight(0xffa366, 0.3)
+    fillLight.position.set(0, 5, 10)
+    
+    scene.add(hemi, sunLight, rimLight, fillLight)
 
-    // Ground
-    const groundGeo = new THREE.PlaneGeometry(40, 400, 1, 1)
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x8a4a15 })
+    // Enhanced ground with texture and shadows
+    const groundGeo = new THREE.PlaneGeometry(40, 400, 32, 32)
+    const groundMat = new THREE.MeshStandardMaterial({ 
+      color: 0xc4762a,
+      roughness: 0.9,
+      metalness: 0.1
+    })
     const ground = new THREE.Mesh(groundGeo, groundMat)
     ground.rotation.x = -Math.PI / 2
     ground.position.z = -180
+    ground.receiveShadow = true
     scene.add(ground)
 
-    // Dunes backdrop (parallax planes)
-    const duneMat = new THREE.MeshBasicMaterial({ color: 0xb56a2b, transparent: true, opacity: 0.6 })
-    const duneFar = new THREE.Mesh(new THREE.PlaneGeometry(60, 12), duneMat)
-    duneFar.position.set(0, 4, -60)
-    scene.add(duneFar)
+    // Multiple dune layers for depth
+    const createDuneLayer = (distance, height, opacity, color) => {
+      const duneMat = new THREE.MeshStandardMaterial({ 
+        color: color, 
+        transparent: true, 
+        opacity: opacity,
+        roughness: 0.8
+      })
+      const dune = new THREE.Mesh(new THREE.PlaneGeometry(80, height), duneMat)
+      dune.position.set(0, height/2, -distance)
+      return dune
+    }
+    
+    scene.add(createDuneLayer(80, 20, 0.4, 0xd4823a))
+    scene.add(createDuneLayer(60, 16, 0.5, 0xc4762a))
+    scene.add(createDuneLayer(40, 12, 0.6, 0xb46a2a))
 
-    // Sun
-    const sun = new THREE.Mesh(new THREE.SphereGeometry(2, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffcf33 }))
-    sun.position.set(10, 12, -40)
+    // Enhanced sun with glow effect
+    const sunGeo = new THREE.SphereGeometry(2.5, 32, 32)
+    const sunMat = new THREE.MeshBasicMaterial({ 
+      color: 0xffcf33,
+      emissive: 0xffaa00,
+      emissiveIntensity: 0.3
+    })
+    const sun = new THREE.Mesh(sunGeo, sunMat)
+    sun.position.set(12, 18, -50)
     scene.add(sun)
+    
+    // Sun glow effect
+    const glowGeo = new THREE.SphereGeometry(4, 16, 16)
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0xffaa00,
+      transparent: true,
+      opacity: 0.2
+    })
+    const sunGlow = new THREE.Mesh(glowGeo, glowMat)
+    sunGlow.position.copy(sun.position)
+    scene.add(sunGlow)
 
-    // Player builder: stylized bear
-    const buildBear = () => {
+    // Heat shimmer particles
+    const shimmerGeo = new THREE.SphereGeometry(0.1, 4, 4)
+    const shimmerMat = new THREE.MeshBasicMaterial({
+      color: 0xffcc66,
+      transparent: true,
+      opacity: 0.3
+    })
+    
+    const shimmerParticles = []
+    for (let i = 0; i < 20; i++) {
+      const particle = new THREE.Mesh(shimmerGeo, shimmerMat)
+      particle.position.set(
+        (Math.random() - 0.5) * 30,
+        Math.random() * 2 + 0.5,
+        (Math.random() - 0.5) * 20
+      )
+      shimmerParticles.push(particle)
+      scene.add(particle)
+    }
+
+    // Character builder system - matches selected character
+    const buildCharacter = (characterType) => {
       const g = new THREE.Group()
-      const fur = new THREE.MeshStandardMaterial({ color: 0x6b4028, roughness: 0.95, metalness: 0.05 })
-      const muzzleMat = new THREE.MeshStandardMaterial({ color: 0xd9b59b, roughness: 0.9 })
-      // Body
-      const body = new THREE.Mesh(new THREE.SphereGeometry(0.95, 18, 14), fur)
-      body.scale.set(1.4, 1.0, 0.9)
+      
+      if (characterType === 'solar-ranger') {
+        return buildSolarRanger(g)
+      } else if (characterType === 'sand-ranger') {
+        return buildForestRunner(g)
+      } else if (characterType === 'ice-sentinel') {
+        return buildIceSentinel(g)
+      }
+      
+      // Default to solar ranger
+      return buildSolarRanger(g)
+    }
+
+    // Solar Ranger - Desert specialist with heat-resistant gear
+    const buildSolarRanger = (g) => {
+      const suitMat = new THREE.MeshStandardMaterial({ color: 0xff6a00, roughness: 0.3, metalness: 0.7 })
+      const visorMat = new THREE.MeshStandardMaterial({ color: 0x00d1ff, roughness: 0.1, metalness: 0.9, transparent: true, opacity: 0.8 })
+      const accentMat = new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.8 })
+      
+      // Body - heat-resistant suit
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 1.4, 12), suitMat)
       body.position.y = 1.0
-      // Head
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 18, 14), fur)
-      head.position.set(0, 1.8, 0.1)
-      // Ears
-      const earGeo = new THREE.SphereGeometry(0.18, 12, 10)
-      const earL = new THREE.Mesh(earGeo, fur); earL.position.set(-0.32, 2.15, -0.05)
-      const earR = earL.clone(); earR.position.x = 0.32
-      // Muzzle and nose
-      const snout = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 10), muzzleMat)
-      snout.position.set(0, 1.7, 0.42)
-      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0x1a1308 }))
-      nose.rotation.x = Math.PI/2
-      nose.position.set(0, 1.69, 0.52)
-      // Limbs
-      const legGeo = new THREE.CapsuleGeometry(0.16, 0.5, 6, 12)
-      const armGeo = new THREE.CapsuleGeometry(0.13, 0.5, 6, 12)
-      const legL = new THREE.Mesh(legGeo, fur); legL.position.set(-0.35, 0.55, 0)
-      const legR = legL.clone(); legR.position.x = 0.35
-      const armL = new THREE.Mesh(armGeo, fur); armL.position.set(-0.65, 1.2, 0)
-      const armR = armL.clone(); armR.position.x = 0.65
-      // Tail
-      const tail = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), fur)
-      tail.position.set(0, 1.0, -0.5)
-      g.add(body, head, earL, earR, snout, nose, legL, legR, armL, armR, tail)
-      g.userData = { armL, armR, legL, legR, head, body, airborne:false }
+      
+      // Head - helmet with visor
+      const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 12), suitMat)
+      helmet.position.set(0, 1.9, 0)
+      
+      // Visor
+      const visor = new THREE.Mesh(new THREE.SphereGeometry(0.52, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.6), visorMat)
+      visor.position.set(0, 1.9, 0.1)
+      
+      // Solar panels on shoulders
+      const panelGeo = new THREE.BoxGeometry(0.3, 0.1, 0.4)
+      const panelL = new THREE.Mesh(panelGeo, accentMat)
+      panelL.position.set(-0.7, 1.6, 0)
+      const panelR = panelL.clone()
+      panelR.position.x = 0.7
+      
+      // Arms
+      const armGeo = new THREE.CylinderGeometry(0.15, 0.18, 0.8, 8)
+      const armL = new THREE.Mesh(armGeo, suitMat)
+      armL.position.set(-0.8, 1.2, 0)
+      const armR = armL.clone()
+      armR.position.x = 0.8
+      
+      // Legs
+      const legGeo = new THREE.CylinderGeometry(0.18, 0.2, 0.9, 8)
+      const legL = new THREE.Mesh(legGeo, suitMat)
+      legL.position.set(-0.3, 0.45, 0)
+      const legR = legL.clone()
+      legR.position.x = 0.3
+      
+      // Heat vents
+      const ventGeo = new THREE.CylinderGeometry(0.05, 0.08, 0.2, 6)
+      const ventMat = new THREE.MeshStandardMaterial({ color: 0xff4400, emissive: 0x441100 })
+      const vent1 = new THREE.Mesh(ventGeo, ventMat)
+      vent1.position.set(0.4, 1.4, 0.3)
+      const vent2 = vent1.clone()
+      vent2.position.x = -0.4
+      
+      g.add(body, helmet, visor, panelL, panelR, armL, armR, legL, legR, vent1, vent2)
+      g.userData = { armL, armR, legL, legR, helmet, body, airborne: false, type: 'solar-ranger' }
       return g
     }
 
-    const hero = buildBear()
+    // Forest Runner - Agile nature specialist
+    const buildForestRunner = (g) => {
+      const leafMat = new THREE.MeshStandardMaterial({ color: 0x228B22, roughness: 0.8, metalness: 0.1 })
+      const barkMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.9, metalness: 0.0 })
+      const clothMat = new THREE.MeshStandardMaterial({ color: 0x654321, roughness: 0.7, metalness: 0.0 })
+      
+      // Body - nature-inspired outfit
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.3, 8), clothMat)
+      body.position.y = 1.0
+      
+      // Head
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 12), clothMat)
+      head.position.set(0, 1.8, 0)
+      
+      // Leaf hood/cap
+      const hood = new THREE.Mesh(new THREE.ConeGeometry(0.45, 0.3, 8), leafMat)
+      hood.position.set(0, 2.0, 0)
+      
+      // Arms - agile and lean
+      const armGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.7, 8)
+      const armL = new THREE.Mesh(armGeo, clothMat)
+      armL.position.set(-0.7, 1.15, 0)
+      const armR = armL.clone()
+      armR.position.x = 0.7
+      
+      // Legs - built for running
+      const legGeo = new THREE.CylinderGeometry(0.15, 0.18, 0.85, 8)
+      const legL = new THREE.Mesh(legGeo, clothMat)
+      legL.position.set(-0.25, 0.42, 0)
+      const legR = legL.clone()
+      legR.position.x = 0.25
+      
+      // Nature accessories
+      const vineGeo = new THREE.TorusGeometry(0.3, 0.03, 4, 12)
+      const vine = new THREE.Mesh(vineGeo, leafMat)
+      vine.position.set(0, 1.5, 0)
+      vine.rotation.x = Math.PI / 4
+      
+      // Bark armor pieces
+      const armor1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.1), barkMat)
+      armor1.position.set(0, 1.3, 0.35)
+      
+      g.add(body, head, hood, armL, armR, legL, legR, vine, armor1)
+      g.userData = { armL, armR, legL, legR, head, body, airborne: false, type: 'forest-runner' }
+      return g
+    }
+
+    // Ice Sentinel - Cold weather specialist
+    const buildIceSentinel = (g) => {
+      const iceMat = new THREE.MeshStandardMaterial({ color: 0x87CEEB, roughness: 0.1, metalness: 0.9, transparent: true, opacity: 0.9 })
+      const snowMat = new THREE.MeshStandardMaterial({ color: 0xF0F8FF, roughness: 0.3, metalness: 0.1 })
+      const crystalMat = new THREE.MeshStandardMaterial({ color: 0xB0E0E6, roughness: 0.0, metalness: 1.0, transparent: true, opacity: 0.8 })
+      
+      // Body - crystalline ice armor
+      const body = new THREE.Mesh(new THREE.OctahedronGeometry(0.8, 1), iceMat)
+      body.position.y = 1.0
+      body.scale.set(1, 1.2, 0.8)
+      
+      // Head - ice crystal helmet
+      const head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.45, 1), iceMat)
+      head.position.set(0, 1.9, 0)
+      
+      // Ice crown
+      const crownGeo = new THREE.ConeGeometry(0.5, 0.4, 6)
+      const crown = new THREE.Mesh(crownGeo, crystalMat)
+      crown.position.set(0, 2.2, 0)
+      
+      // Arms - crystalline
+      const armGeo = new THREE.OctahedronGeometry(0.2, 1)
+      const armL = new THREE.Mesh(armGeo, iceMat)
+      armL.position.set(-0.8, 1.2, 0)
+      armL.scale.set(0.8, 2, 0.8)
+      const armR = armL.clone()
+      armR.position.x = 0.8
+      
+      // Legs - sturdy ice pillars
+      const legGeo = new THREE.CylinderGeometry(0.2, 0.25, 0.9, 6)
+      const legL = new THREE.Mesh(legGeo, iceMat)
+      legL.position.set(-0.3, 0.45, 0)
+      const legR = legL.clone()
+      legR.position.x = 0.3
+      
+      // Frost aura particles
+      const particleGeo = new THREE.SphereGeometry(0.02, 4, 4)
+      for (let i = 0; i < 8; i++) {
+        const particle = new THREE.Mesh(particleGeo, snowMat)
+        const angle = (i / 8) * Math.PI * 2
+        particle.position.set(
+          Math.cos(angle) * 1.2,
+          1.0 + Math.sin(i * 0.5) * 0.3,
+          Math.sin(angle) * 1.2
+        )
+        g.add(particle)
+      }
+      
+      g.add(body, head, crown, armL, armR, legL, legR)
+      g.userData = { armL, armR, legL, legR, head, body, airborne: false, type: 'ice-sentinel' }
+      return g
+    }
+
+    const hero = buildCharacter(selectedCharacter)
     hero.position.set(LANES[laneIndexRef.current], 0, 0)
+    hero.castShadow = true
+    hero.receiveShadow = true
+    // Enable shadows for all character parts
+    hero.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
     scene.add(hero)
 
     // Collections
@@ -440,25 +661,82 @@ export default function ScorchZone({ onExit, onRestart, selectedCharacter = 'sol
           }
         }
 
-        // Character run animation (limb swing)
+        // Enhanced character-specific animations
         const t = clockRef.current.elapsedTime
-        const swing = Math.sin(t * 8) * 0.6
+        const swing = Math.sin(t * 10) * 0.5 // Slightly faster, more controlled
+        const bounce = Math.abs(Math.sin(t * 12)) * 0.08 // Subtle bounce
+        
         if (playerRef.current?.userData) {
-          const { armL, armR, legL, legR, head, body } = playerRef.current.userData
-          if (armL && armR && legL && legR) {
-            if (!slidingRef.current) {
-              armL.rotation.x = swing
-              armR.rotation.x = -swing
-              legL.rotation.x = -swing * 0.8
-              legR.rotation.x = swing * 0.8
-            } else {
-              // slide pose
-              armL.rotation.x = -1.2
-              armR.rotation.x = -1.0
-              legL.rotation.x = 0.4
-              legR.rotation.x = -0.2
+          const { armL, armR, legL, legR, head, body, helmet, type } = playerRef.current.userData
+          
+          // Character-specific animations
+          if (type === 'solar-ranger') {
+            // Solar Ranger: Mechanical, precise movements
+            if (armL && armR && legL && legR) {
+              if (!slidingRef.current) {
+                armL.rotation.x = swing * 0.7
+                armR.rotation.x = -swing * 0.7
+                legL.rotation.x = -swing * 0.9
+                legR.rotation.x = swing * 0.9
+              }
+            }
+            // Helmet visor glint effect
+            if (helmet) {
+              helmet.rotation.y = Math.sin(t * 2) * 0.05
+            }
+            
+          } else if (type === 'forest-runner') {
+            // Forest Runner: Agile, fluid movements
+            if (armL && armR && legL && legR) {
+              if (!slidingRef.current) {
+                armL.rotation.x = swing * 1.2 // More arm swing
+                armR.rotation.x = -swing * 1.2
+                legL.rotation.x = -swing * 1.1
+                legR.rotation.x = swing * 1.1
+              }
+            }
+            // Natural swaying motion
+            if (body) {
+              body.rotation.z = Math.sin(t * 6) * 0.03
+            }
+            
+          } else if (type === 'ice-sentinel') {
+            // Ice Sentinel: Crystalline, angular movements
+            if (armL && armR && legL && legR) {
+              if (!slidingRef.current) {
+                armL.rotation.x = swing * 0.4 // Stiffer movements
+                armR.rotation.x = -swing * 0.4
+                legL.rotation.x = -swing * 0.6
+                legR.rotation.x = swing * 0.6
+              }
+            }
+            // Crystalline sparkle effect
+            if (head) {
+              head.rotation.y = Math.sin(t * 3) * 0.02
             }
           }
+          
+          // Universal running bounce
+          if (!playerRef.current.userData.airborne) {
+            playerRef.current.position.y += bounce
+          }
+          
+          // Head bob for all characters
+          if (head && !slidingRef.current) {
+            head.rotation.x = Math.sin(t * 8) * 0.02
+          }
+          
+          // Sliding pose override
+          if (slidingRef.current && armL && armR && legL && legR) {
+            armL.rotation.x = -1.2
+            armR.rotation.x = -1.0
+            legL.rotation.x = 0.4
+            legR.rotation.x = -0.2
+          }
+        
+        // Additional character tilting and body language
+        if (playerRef.current?.userData) {
+          const { head, body } = playerRef.current.userData
           if (head) {
             const tilt = (LANES[laneIndexRef.current] - playerRef.current.position.x) * 0.08
             head.rotation.z = tilt
